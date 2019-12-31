@@ -274,7 +274,7 @@ with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
 case $with_distro in
     lfs|debian|gentoo|archlinux|suse|fedora|mandriva|darwin|freebsd|slackware|none)
      ;;
-    netbsd)
+    netbsd|os/2)
      AC_MSG_WARN([Your distribution (${with_distro}) is supported but no init script exist yet! (patches welcome)])
      ;;
     linux)
