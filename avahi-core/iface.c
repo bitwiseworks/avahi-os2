@@ -209,9 +209,13 @@ static int interface_mdns_mcast_join(AvahiInterface *i, int join) {
                    avahi_proto_to_string(i->protocol),
                    avahi_address_snprint(at, sizeof(at), &i->local_mcast_address));
 
+#ifndef __OS2__
     if (i->protocol == AVAHI_PROTO_INET6)
         r = avahi_mdns_mcast_join_ipv6(i->monitor->server->fd_ipv6, &i->local_mcast_address.data.ipv6, i->hardware->index, join);
     else {
+#else
+    {
+#endif
         assert(i->protocol == AVAHI_PROTO_INET);
 
         r = avahi_mdns_mcast_join_ipv4(i->monitor->server->fd_ipv4, &i->local_mcast_address.data.ipv4, i->hardware->index, join);
@@ -597,8 +601,10 @@ void avahi_interface_send_packet_unicast(AvahiInterface *i, AvahiDnsPacket *p, c
 
     if (i->protocol == AVAHI_PROTO_INET && i->monitor->server->fd_ipv4 >= 0)
         avahi_send_dns_packet_ipv4(i->monitor->server->fd_ipv4, i->hardware->index, p, i->mcast_joined ? &i->local_mcast_address.data.ipv4 : NULL, a ? &a->data.ipv4 : NULL, port);
+#ifndef __OS2__
     else if (i->protocol == AVAHI_PROTO_INET6 && i->monitor->server->fd_ipv6 >= 0)
         avahi_send_dns_packet_ipv6(i->monitor->server->fd_ipv6, i->hardware->index, p, i->mcast_joined ? &i->local_mcast_address.data.ipv6 : NULL, a ? &a->data.ipv6 : NULL, port);
+#endif
 }
 
 void avahi_interface_send_packet(AvahiInterface *i, AvahiDnsPacket *p) {

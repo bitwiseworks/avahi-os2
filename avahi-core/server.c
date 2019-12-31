@@ -825,8 +825,12 @@ static void reflect_legacy_unicast_query_packet(AvahiServer *s, AvahiDnsPacket *
 
             if (j->protocol == AVAHI_PROTO_INET && s->fd_legacy_unicast_ipv4 >= 0) {
                 avahi_send_dns_packet_ipv4(s->fd_legacy_unicast_ipv4, j->hardware->index, p, NULL, NULL, 0);
+#ifdef __OS2__
+            }
+#else
             } else if (j->protocol == AVAHI_PROTO_INET6 && s->fd_legacy_unicast_ipv6 >= 0)
                 avahi_send_dns_packet_ipv6(s->fd_legacy_unicast_ipv6, j->hardware->index, p, NULL, NULL, 0);
+#endif
         }
 
     /* Reset the id */
@@ -855,6 +859,7 @@ static int originates_from_local_legacy_unicast_socket(AvahiServer *s, const Ava
 
     }
 
+#ifndef __OS2__
     if (address->proto == AVAHI_PROTO_INET6 && s->fd_legacy_unicast_ipv6 >= 0) {
         struct sockaddr_in6 lsa;
         socklen_t l = sizeof(lsa);
@@ -864,6 +869,7 @@ static int originates_from_local_legacy_unicast_socket(AvahiServer *s, const Ava
         else
             return avahi_port_from_sockaddr((struct sockaddr*) &lsa) == port;
     }
+#endif
 
     return 0;
 }
@@ -1038,10 +1044,12 @@ static void mcast_socket_event(AvahiWatch *w, int fd, AvahiWatchEvent events, vo
     if (fd == s->fd_ipv4) {
         dest.proto = src.proto = AVAHI_PROTO_INET;
         p = avahi_recv_dns_packet_ipv4(s->fd_ipv4, &src.data.ipv4, &port, &dest.data.ipv4, &iface, &ttl);
+#ifndef __OS2__
     } else {
         assert(fd == s->fd_ipv6);
         dest.proto = src.proto = AVAHI_PROTO_INET6;
         p = avahi_recv_dns_packet_ipv6(s->fd_ipv6, &src.data.ipv6, &port, &dest.data.ipv6, &iface, &ttl);
+#endif
     }
 
     if (p) {
@@ -1069,10 +1077,12 @@ static void legacy_unicast_socket_event(AvahiWatch *w, int fd, AvahiWatchEvent e
 
     if (fd == s->fd_legacy_unicast_ipv4)
         p = avahi_recv_dns_packet_ipv4(s->fd_legacy_unicast_ipv4, NULL, NULL, NULL, NULL, NULL);
+#ifndef __OS2__
     else {
         assert(fd == s->fd_legacy_unicast_ipv6);
         p = avahi_recv_dns_packet_ipv6(s->fd_legacy_unicast_ipv6, NULL, NULL, NULL, NULL, NULL);
     }
+#endif
 
     if (p) {
         dispatch_legacy_unicast_packet(s, p);

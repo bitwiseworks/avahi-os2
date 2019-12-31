@@ -141,6 +141,7 @@ static int send_to_dns_server(AvahiWideAreaLookup *l, AvahiDnsPacket *p) {
 
         return avahi_send_dns_packet_ipv4(l->engine->fd_ipv4, AVAHI_IF_UNSPEC, p, NULL, &a->data.ipv4, AVAHI_DNS_PORT);
 
+#ifndef __OS2__
     } else {
         assert(a->proto == AVAHI_PROTO_INET6);
 
@@ -148,6 +149,7 @@ static int send_to_dns_server(AvahiWideAreaLookup *l, AvahiDnsPacket *p) {
             return -1;
 
         return avahi_send_dns_packet_ipv6(l->engine->fd_ipv6, AVAHI_IF_UNSPEC, p, NULL, &a->data.ipv6, AVAHI_DNS_PORT);
+#endif
     }
 }
 
@@ -556,10 +558,12 @@ static void socket_event(AVAHI_GCC_UNUSED AvahiWatch *w, int fd, AVAHI_GCC_UNUSE
 
     if (fd == e->fd_ipv4)
         p = avahi_recv_dns_packet_ipv4(e->fd_ipv4, NULL, NULL, NULL, NULL, NULL);
+#ifndef __OS2__
     else {
         assert(fd == e->fd_ipv6);
         p = avahi_recv_dns_packet_ipv6(e->fd_ipv6, NULL, NULL, NULL, NULL, NULL);
     }
+#endif
 
     if (p) {
         handle_packet(e, p);
@@ -578,7 +582,9 @@ AvahiWideAreaLookupEngine *avahi_wide_area_engine_new(AvahiServer *s) {
 
     /* Create sockets */
     e->fd_ipv4 = s->config.use_ipv4 ? avahi_open_unicast_socket_ipv4() : -1;
+#ifndef __OS2__
     e->fd_ipv6 = s->config.use_ipv6 ? avahi_open_unicast_socket_ipv6() : -1;
+#endif
 
     if (e->fd_ipv4 < 0 && e->fd_ipv6 < 0) {
         avahi_log_error(__FILE__": Failed to create wide area sockets: %s", strerror(errno));

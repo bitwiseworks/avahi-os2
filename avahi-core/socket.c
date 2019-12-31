@@ -52,6 +52,7 @@
 #include "addr-util.h"
 
 /* this is a portability hack */
+#ifndef __OS2__
 #ifndef IPV6_ADD_MEMBERSHIP
 #ifdef  IPV6_JOIN_GROUP
 #define IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
@@ -61,6 +62,7 @@
 #ifndef IPV6_DROP_MEMBERSHIP
 #ifdef  IPV6_LEAVE_GROUP
 #define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
+#endif
 #endif
 #endif
 
@@ -73,6 +75,7 @@ static void mdns_mcast_group_ipv4(struct sockaddr_in *ret_sa) {
     inet_pton(AF_INET, AVAHI_IPV4_MCAST_GROUP, &ret_sa->sin_addr);
 }
 
+#ifndef __OS2__
 static void mdns_mcast_group_ipv6(struct sockaddr_in6 *ret_sa) {
     assert(ret_sa);
 
@@ -81,6 +84,7 @@ static void mdns_mcast_group_ipv6(struct sockaddr_in6 *ret_sa) {
     ret_sa->sin6_port = htons(AVAHI_MDNS_PORT);
     inet_pton(AF_INET6, AVAHI_IPV6_MCAST_GROUP, &ret_sa->sin6_addr);
 }
+#endif
 
 static void ipv4_address_to_sockaddr(struct sockaddr_in *ret_sa, const AvahiIPv4Address *a, uint16_t port) {
     assert(ret_sa);
@@ -93,6 +97,7 @@ static void ipv4_address_to_sockaddr(struct sockaddr_in *ret_sa, const AvahiIPv4
     memcpy(&ret_sa->sin_addr, a, sizeof(AvahiIPv4Address));
 }
 
+#ifndef __OS2__
 static void ipv6_address_to_sockaddr(struct sockaddr_in6 *ret_sa, const AvahiIPv6Address *a, uint16_t port) {
     assert(ret_sa);
     assert(a);
@@ -103,6 +108,7 @@ static void ipv6_address_to_sockaddr(struct sockaddr_in6 *ret_sa, const AvahiIPv
     ret_sa->sin6_port = htons(port);
     memcpy(&ret_sa->sin6_addr, a, sizeof(AvahiIPv6Address));
 }
+#endif
 
 int avahi_mdns_mcast_join_ipv4(int fd, const AvahiIPv4Address *a, int idx, int join) {
 #ifdef HAVE_STRUCT_IP_MREQN
@@ -140,6 +146,7 @@ int avahi_mdns_mcast_join_ipv4(int fd, const AvahiIPv4Address *a, int idx, int j
     return 0;
 }
 
+#ifndef __OS2__
 int avahi_mdns_mcast_join_ipv6(int fd, const AvahiIPv6Address *a, int idx, int join) {
     struct ipv6_mreq mreq6;
     struct sockaddr_in6 sa6;
@@ -163,6 +170,7 @@ int avahi_mdns_mcast_join_ipv6(int fd, const AvahiIPv6Address *a, int idx, int j
 
     return 0;
 }
+#endif
 
 static int reuseaddr(int fd) {
     int yes;
@@ -268,6 +276,7 @@ static int ipv4_pktinfo(int fd) {
     return 0;
 }
 
+#ifndef __OS2__
 static int ipv6_pktinfo(int fd) {
     int yes;
 
@@ -307,6 +316,7 @@ static int ipv6_pktinfo(int fd) {
 
     return 0;
 }
+#endif
 
 int avahi_open_socket_ipv4(int no_reuse) {
     struct sockaddr_in local;
@@ -371,6 +381,10 @@ fail:
 }
 
 int avahi_open_socket_ipv6(int no_reuse) {
+#ifdef __OS2__
+    int fd = -1;
+    avahi_log_warn("No IPV6 support");
+#else
     struct sockaddr_in6 sa, local;
     int fd = -1, yes, r;
     int ttl;
@@ -432,6 +446,7 @@ int avahi_open_socket_ipv6(int no_reuse) {
     }
 
     return fd;
+#endif
 
 fail:
     if (fd >= 0)
@@ -562,6 +577,7 @@ int avahi_send_dns_packet_ipv4(
     return sendmsg_loop(fd, &msg, 0);
 }
 
+#ifndef __OS2__
 int avahi_send_dns_packet_ipv6(
         int fd,
         AvahiIfIndex interface,
@@ -623,6 +639,7 @@ int avahi_send_dns_packet_ipv6(
 
     return sendmsg_loop(fd, &msg, 0);
 }
+#endif
 
 AvahiDnsPacket *avahi_recv_dns_packet_ipv4(
         int fd,
@@ -785,6 +802,7 @@ fail:
     return NULL;
 }
 
+#ifndef __OS2__
 AvahiDnsPacket *avahi_recv_dns_packet_ipv6(
         int fd,
         AvahiIPv6Address *ret_src_address,
@@ -907,6 +925,7 @@ fail:
 
     return NULL;
 }
+#endif
 
 int avahi_open_unicast_socket_ipv4(void) {
     struct sockaddr_in local;
@@ -949,6 +968,10 @@ fail:
 }
 
 int avahi_open_unicast_socket_ipv6(void) {
+#ifdef __OS2__
+    int fd = -1;
+    avahi_log_warn("No IPV6 support");
+#else
     struct sockaddr_in6 local;
     int fd = -1, yes;
 
@@ -985,6 +1008,7 @@ int avahi_open_unicast_socket_ipv6(void) {
     }
 
     return fd;
+#endif
 
 fail:
     if (fd >= 0)

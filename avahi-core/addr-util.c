@@ -40,8 +40,10 @@ AvahiAddress *avahi_address_from_sockaddr(const struct sockaddr* sa, AvahiAddres
 
     if (sa->sa_family == AF_INET)
         memcpy(&ret_addr->data.ipv4, &((const struct sockaddr_in*) sa)->sin_addr, sizeof(ret_addr->data.ipv4));
+#ifndef __OS2__
     else
         memcpy(&ret_addr->data.ipv6, &((const struct sockaddr_in6*) sa)->sin6_addr, sizeof(ret_addr->data.ipv6));
+#endif
 
     return ret_addr;
 }
@@ -53,8 +55,10 @@ uint16_t avahi_port_from_sockaddr(const struct sockaddr* sa) {
 
     if (sa->sa_family == AF_INET)
         return ntohs(((const struct sockaddr_in*) sa)->sin_port);
+#ifndef __OS2__
     else
         return ntohs(((const struct sockaddr_in6*) sa)->sin6_port);
+#endif
 }
 
 int avahi_address_is_ipv4_in_ipv6(const AvahiAddress *a) {

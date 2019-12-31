@@ -24,6 +24,10 @@
 
 #include "dns.h"
 
+#ifdef __OS2__
+#include <libcx/net.h>
+#endif
+
 #define AVAHI_MDNS_PORT 5353
 #define AVAHI_DNS_PORT 53
 #define AVAHI_IPV4_MCAST_GROUP "224.0.0.251"

@@ -176,6 +176,7 @@ static void rtm_addr(struct rt_msghdr *rtm, AvahiInterfaceMonitor *m)
 	  break;
 	}
 	break;
+#ifndef __OS2__
       case AF_INET6:
 	switch (1<<i) {
 	case RTA_NETMASK:
@@ -195,6 +196,7 @@ static void rtm_addr(struct rt_msghdr *rtm, AvahiInterfaceMonitor *m)
 	  break;
 	}
 	break;
+#endif
       default:
 	break;
       }
@@ -214,11 +216,13 @@ static void rtm_addr(struct rt_msghdr *rtm, AvahiInterfaceMonitor *m)
       if (!(addriface = avahi_interface_monitor_get_address(m, iface, &raddr)))
 	if (!(addriface = avahi_interface_address_new(m, iface, &raddr, prefixlen)))
 	  return; /* OOM */
+#ifndef __OS2__
       if (raddr.proto == AVAHI_PROTO_INET6)
         {
 	  addriface->global_scope = !(IN6_IS_ADDR_LINKLOCAL((struct in6_addr *)raddr.data.data) || IN6_IS_ADDR_MULTICAST((struct in6_addr *)raddr.data.data));
 	}
       else
+#endif
         addriface->global_scope = 1;
     }
   else
