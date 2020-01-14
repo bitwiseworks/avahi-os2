@@ -587,9 +587,15 @@ static char *get_machine_id(void) {
     int fd;
     char buf[32];
 
+#ifdef __OS2__
+    fd = open("/@unixroot/etc/machine-id", O_RDONLY|O_NOCTTY);
+    if (fd == -1 && errno == ENOENT)
+        fd = open("/@unixroot/var/lib/dbus/machine-id", O_RDONLY|O_NOCTTY);
+#else
     fd = open("/etc/machine-id", O_RDONLY|O_CLOEXEC|O_NOCTTY);
     if (fd == -1 && errno == ENOENT)
         fd = open("/var/lib/dbus/machine-id", O_RDONLY|O_CLOEXEC|O_NOCTTY);
+#endif
     if (fd == -1)
         return NULL;
 

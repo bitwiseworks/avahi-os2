@@ -38,6 +38,10 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
+#ifdef __OS2__
+#include <libcx/net.h>
+#endif
+
 #include <avahi-common/llist.h>
 #include <avahi-common/malloc.h>
 #include <avahi-common/address.h>

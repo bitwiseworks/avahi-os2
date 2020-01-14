@@ -41,6 +41,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stddef.h>
+#ifdef __OS2__
+#include <libcx/net.h>
+#endif
 
 #include "sd-daemon.h"
 
@@ -204,9 +207,13 @@ static int sd_is_socket_internal(int fd, int type, int listening) {
 union sockaddr_union {
         struct sockaddr sa;
         struct sockaddr_in in4;
+#ifndef __OS2__
         struct sockaddr_in6 in6;
+#endif
         struct sockaddr_un un;
+#ifndef __OS2__
         struct sockaddr_storage storage;
+#endif
 };
 
 int sd_is_socket(int fd, int family, int type, int listening) {
@@ -272,10 +279,14 @@ int sd_is_socket_inet(int fd, int family, int type, int listening, uint16_t port
 
                         return htons(port) == sockaddr.in4.sin_port;
                 } else {
+#ifdef __OS2__
+                        return -EINVAL;
+#else
                         if (l < sizeof(struct sockaddr_in6))
                                 return -EINVAL;
 
                         return htons(port) == sockaddr.in6.sin6_port;
+#endif
                 }
         }
 
