@@ -41,6 +41,9 @@ libavahi_libevent_la_SOURCES = \
 libavahi_libevent_la_CFLAGS = $(AM_CFLAGS) $(LIBEVENT_CFLAGS)
 libavahi_libevent_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(LIBEVENT_LIBS)
 libavahi_libevent_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_LIBEVENT_VERSION_INFO)
+if TARGET_OS2
+libavahi_libevent_la_LDFLAGS += -shortname avahevt
+endif
 
 libevent_watch_test_SOURCES = \
 	libevent-watch.c libevent-watch.h \

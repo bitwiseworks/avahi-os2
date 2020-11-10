@@ -102,6 +102,9 @@ endif
 libavahi_core_la_CFLAGS = $(AM_CFLAGS)
 libavahi_core_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la
 libavahi_core_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_CORE_VERSION_INFO)
+if TARGET_OS2
+libavahi_core_la_LDFLAGS += -shortname avahcor
+endif
 
 prioq_test_SOURCES = \
 	prioq-test.c  \

@@ -298,6 +298,7 @@ AM_CONDITIONAL(TARGET_DARWIN, test x"$with_distro" = xdarwin)
 AM_CONDITIONAL(TARGET_NETBSD, test x"$with_distro" = xnetbsd)
 AM_CONDITIONAL(TARGET_FREEBSD, test x"$with_distro" = xfreebsd)
 AM_CONDITIONAL(TARGET_SLACKWARE, test x"$with_distro" = xslackware)
+AM_CONDITIONAL(TARGET_OS2, test x"$with_distro" = "xos/2")
 
 test_gcc_flag() {
     AC_LANG_CONFTEST([int main() {}])

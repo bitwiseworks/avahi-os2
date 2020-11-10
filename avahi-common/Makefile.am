@@ -71,6 +71,9 @@ libavahi_common_la_SOURCES = \
 libavahi_common_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS) -DAVAHI_LOCALEDIR=\"$(avahilocaledir)\"
 libavahi_common_la_LIBADD = $(AM_LDADD) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) $(INTLLIBS)
 libavahi_common_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_COMMON_VERSION_INFO)
+if TARGET_OS2
+libavahi_common_la_LDFLAGS += -shortname avahcom
+endif
 
 strlst_test_SOURCES = \
 	strlst.c strlst.h \

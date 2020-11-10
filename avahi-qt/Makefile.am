@@ -63,6 +63,9 @@ qt-watch.moc4: qt-watch.cpp
 libavahi_qt4_la_CPPFLAGS = $(AM_CFLAGS) $(QT4_CFLAGS) -DQT4 $(VISIBILITY_HIDDEN_CFLAGS)
 libavahi_qt4_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(QT4_LIBS)
 libavahi_qt4_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LIBAVAHI_QT4_VERSION_INFO)
+if TARGET_OS2
+libavahi_qt4_la_LDFLAGS += -shortname avahqt4
+endif
 endif
 
 if HAVE_QT5
@@ -85,6 +88,9 @@ qt-watch.moc5: qt-watch.cpp
 libavahi_qt5_la_CPPFLAGS = $(AM_CFLAGS) --std=gnu++11 $(QT5_CFLAGS) -DQT5 $(VISIBILITY_HIDDEN_CFLAGS)
 libavahi_qt5_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(QT5_LIBS)
 libavahi_qt5_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LIBAVAHI_QT5_VERSION_INFO)
+if TARGET_OS2
+libavahi_qt5_la_LDFLAGS += -shortname avahqt5
+endif
 endif
 
 CLEANFILES = $(BUILT_SOURCES)
