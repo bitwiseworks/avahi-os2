@@ -54,6 +54,9 @@ libavahi_client_la_SOURCES = \
 libavahi_client_la_CFLAGS = $(AM_CFLAGS) $(DBUS_CFLAGS) -DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS=\"$(DBUS_SYSTEM_BUS_DEFAULT_ADDRESS)\"
 libavahi_client_la_LIBADD = $(AM_LDADD) $(DBUS_LIBS) ../avahi-common/libavahi-common.la
 libavahi_client_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_CLIENT_VERSION_INFO)
+if TARGET_OS2
+libavahi_client_la_LDFLAGS += -shortname avahcln
+endif
 
 client_test_SOURCES = client-test.c
 client_test_CFLAGS = $(AM_CFLAGS)
