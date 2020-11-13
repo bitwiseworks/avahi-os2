@@ -57,6 +57,10 @@
 #include "dbus-internal.h"
 #include "main.h"
 
+#ifdef __OS2__
+#define IF_NAMESIZE IFNAMSIZ
+#endif
+
 /* #define VALGRIND_WORKAROUND 1 */
 
 #define RECONNECT_MSEC 3000

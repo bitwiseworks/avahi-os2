@@ -47,6 +47,10 @@
 #include "stdb.h"
 #endif
 
+#ifdef __OS2__
+#define IF_NAMESIZE IFNAMSIZ
+#endif
+
 typedef enum {
     COMMAND_HELP,
     COMMAND_VERSION,
