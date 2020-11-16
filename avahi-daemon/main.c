@@ -165,10 +165,16 @@ static int load_resolv_conf(void) {
     avahi_strfreev(resolv_conf_search_domains);
     resolv_conf_search_domains = NULL;
 
-#ifdef ENABLE_CHROOT
-    f = avahi_chroot_helper_get_file(RESOLV_CONF);
+#ifdef __OS2__
+    char fname[260] = {'\0'};
+    snprintf(fname, sizeof(fname) -1, "%s\\RESOLV2", getenv("ETC"));
 #else
-    f = fopen(RESOLV_CONF, "r");
+    const char *fname = RESOLV_CONF;
+#endif
+#ifdef ENABLE_CHROOT
+    f = avahi_chroot_helper_get_file(fname);
+#else
+    f = fopen(fname, "r");
 #endif
 
     if (!f) {
@@ -1449,8 +1455,10 @@ static void set_one_rlimit(int resource, rlim_t limit, const char *name) {
     struct rlimit rl;
     rl.rlim_cur = rl.rlim_max = limit;
 
+#ifndef __OS2__ //it's a stub only for us, so don't use it
     if (setrlimit(resource, &rl) < 0)
         avahi_log_warn("setrlimit(%s, {%u, %u}) failed: %s", name, (unsigned) limit, (unsigned) limit, strerror(errno));
+#endif
 }
 
 static void enforce_rlimits(void) {
