@@ -491,7 +491,18 @@ int simple_protocol_setup(const AvahiPoll *poll_api) {
 
         memset(&sa, 0, sizeof(sa));
         sa.sun_family = AF_LOCAL;
+#ifdef __OS2__
+        strncpy(sa.sun_path, AVAHI_SOCKET, sizeof(struct sockaddr_un));
+        /* we need \socket\anything, so change / to \ */
+        char *p;
+        for (p = sa.sun_path; *p; p++)
+        {
+            if (*p == '/')
+                *p = '\\';
+        }
+#else
         strncpy(sa.sun_path, AVAHI_SOCKET, sizeof(sa.sun_path)-1);
+#endif
 
         /* We simply remove existing UNIX sockets under this name. The
            Avahi daemon makes sure that it runs only once on a host,
