@@ -32,6 +32,11 @@
 #include <avahi-common/gccmacro.h>
 #include "sigint.h"
 
+#ifdef __OS2__
+#include <sys/socket.h>
+#define pipe(A) socketpair(AF_UNIX, SOCK_STREAM, 0, A)
+#endif
+
 static AvahiSimplePoll *simple_poll = NULL;
 static struct sigaction old_sigint_sa, old_sigterm_sa;
 static int pipe_fds[2] = { -1, -1 };

@@ -101,6 +101,11 @@
 #define ETHER_HDR_SIZE (2+2*ETHER_ADDRLEN)
 #define ARP_PACKET_SIZE (8+4+4+2*ETHER_ADDRLEN)
 
+#ifdef __OS2__
+#include <sys/socket.h>
+#define pipe(A) socketpair(AF_UNIX, SOCK_STREAM, 0, A)
+#endif
+
 typedef enum ArpOperation {
     ARP_REQUEST = 1,
     ARP_RESPONSE = 2

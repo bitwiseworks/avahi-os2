@@ -34,6 +34,11 @@
 #include "timeval.h"
 #include "simple-watch.h"
 
+#ifdef __OS2__
+#include <sys/socket.h>
+#define pipe(A) socketpair(AF_UNIX, SOCK_STREAM, 0, A)
+#endif
+
 struct AvahiWatch {
     AvahiSimplePoll *simple_poll;
     int dead;
