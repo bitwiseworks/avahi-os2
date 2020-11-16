@@ -1005,8 +1005,16 @@ AC_DEFINE_UNQUOTED(AVAHI_AUTOIPD_GROUP,"$AVAHI_AUTOIPD_GROUP", [Group for runnin
 #
 # Avahi runtime dir
 #
+case $with_distro in
+    os/2)
+avahi_runtime_dir="/@unixroot/var/run"
+avahi_socket="/socket/ahavi-daemon"
+     ;;
+    *)
 avahi_runtime_dir="/run"
 avahi_socket="${avahi_runtime_dir}/avahi-daemon/socket"
+     ;;
+esac
 AC_SUBST(avahi_runtime_dir)
 AC_SUBST(avahi_socket)
 
