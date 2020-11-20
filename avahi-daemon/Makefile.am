@@ -87,10 +87,10 @@ if HAVE_SYSTEMD
 systemdsystemunit_DATA = \
 	avahi-daemon.service \
 	avahi-daemon.socket
+endif
 
 dist_dbussystemservices_DATA = \
 	org.freedesktop.Avahi.service
-endif
 
 CLEANFILES = $(systemdsystemunit_DATA)
 
